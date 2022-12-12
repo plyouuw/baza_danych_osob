@@ -111,7 +111,6 @@ internal class Toolbox
             {
                 Print(selected, optionaly_before_text);
                 key = Console.ReadKey().Key;
-
                 if (key == ConsoleKey.UpArrow)
                 {
                     if (selected == 0) selected = SlownikOpcji.Count - 1;
