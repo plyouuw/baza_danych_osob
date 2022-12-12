@@ -80,7 +80,7 @@ namespace baza_danych_osob
         }
         public Osoby(List<Osoba> lista_osob)
         {
-            this.internal_list = lista_osob;
+            internal_list = lista_osob;
         }
 
         public void Init(Menu.Theme styl_menu)
@@ -200,15 +200,27 @@ namespace baza_danych_osob
             Print("\nZakończono wprowadzanie nowej osoby!\n");
             Czekaj();
         }
+
+        public void UsunOsobe(Menu.Theme styl_menu) 
+        {
+            Osoba wybrana = WybierzOsobe(styl_menu);
+            if (wybrana.id > 0)
+            {
+                internal_list.Remove(wybrana);
+                Print("\n Zakończono usuwanie wybranej osoby!\n");
+                Czekaj();
+            }
+        }
         public Osoba WybierzOsobe(Menu.Theme styl_menu)
         {
             Dictionary<int, string> dic = new();
+            dic.Add(0, "Powrót do menu głównego\n\n  ID\tDane osobowe");
             foreach (Osoba os in internal_list)
             {
-                dic.Add(os.id, "\t" + os.imie + " " + os.nazwisko + " " + os.wiek + " lat");
+                if(!dic.ContainsKey(os.id)) dic.Add(os.id, "\t" + os.imie + " " + os.nazwisko + " " + os.wiek + " lat");
             }
-            dic.Add(0, "Powrót do menu głównego");
-            Menu menu = new(styl_menu, dic, "Wybierz osobę z listy:\n\n  ID\tDane osobowe");
+            //dic.Add(0, "\tPowrót do menu głównego\n  ID\tDane osobowe");
+            Menu menu = new(styl_menu, dic, "Wybierz osobę z listy:");
             int selected = menu.ReadChoice();
 
             if (selected == 0) return new() { id = 0 };
@@ -398,8 +410,9 @@ namespace baza_danych_osob
                 { 2, "Popraw dane osoby" },
                 { 3, "Wyszukaj osoby" },
                 { 4, "Wyświetl wszystkie osoby" },
-                { 5, "Zapisz bazę danych do pliku CSV" },
-                { 6, "Zapisz bazę danych do pliku JSON\n" },
+                { 5, "Usuń osobę" },
+                { 8, "Zapisz bazę danych do pliku CSV" },
+                { 9, "Zapisz bazę danych do pliku JSON\n" },
                 { 0, "Zakończ działanie programu" }
             };
 
@@ -412,7 +425,8 @@ namespace baza_danych_osob
                 else if (wybor == 2) lista_osob.PoprawDane(styl_menu);
                 else if (wybor == 3) lista_osob.ZnajdzPasujaceOsoby(styl_menu);
                 else if (wybor == 4) lista_osob.WyswietlListeOsob();
-                else if (wybor == 5)
+                else if (wybor == 5) lista_osob.UsunOsobe(styl_menu);
+                else if (wybor == 8)
                 {
                     Print("Podaj ścieżkę do pliku CSV: ");
                     if (lista_osob.ZapiszJakoCSV(Read()))
@@ -421,7 +435,7 @@ namespace baza_danych_osob
                         Czekaj();
                     }
                 }
-                else if (wybor == 6)
+                else if (wybor == 9)
                 {
                     Print("Podaj ścieżkę do pliku JSON: ");
                     if (lista_osob.ZapiszJakoJSON(Read()))
@@ -430,7 +444,7 @@ namespace baza_danych_osob
                         Czekaj();
                     }
                 }
-                else if (wybor == 9) return;
+                else if (wybor == 0) return;
             }
         }
     }
